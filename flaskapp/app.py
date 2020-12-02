@@ -134,9 +134,12 @@ class Post(db.Model):
 ## calculate perspective scores for each post
 # posts = Post.query.all()
 # for post in posts:
+#     print(post.toxicity)
 #     score_dict = moderation.get_perspective_score(post.content)
-#     db.session.query(Post).filter_by(id==post.id).update(score_dict)
-# db.session.commit()
+#     # print(score_dict['toxicity'])
+#     post.toxicity = score_dict['toxicity']
+#     db.session.commit()
+#     print(post.toxicity)
 
 
 # Check if user logged in
