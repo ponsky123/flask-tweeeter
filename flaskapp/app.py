@@ -7,6 +7,8 @@ from passlib.hash import sha256_crypt
 import os
 from werkzeug.utils import secure_filename
 from functools import wraps
+import moderation
+from sqlalchemy import update
 
 ##########################  CONFIG  ####################################
 
@@ -41,6 +43,7 @@ followers = db.Table('follows',
 
 # User model
 class User(db.Model):
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(25), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -54,6 +57,13 @@ class User(db.Model):
                                primaryjoin=(followers.c.follower_id == id),
                                secondaryjoin=(followers.c.followed_id == id),
                                backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
+    toxicity = db.Column(db.Float, default=1/7, unique=False)
+    threat = db.Column(db.Float, default=1/7, unique=False)
+    sexually_explicit = db.Column(db.Float, default=1/7, unique=False)
+    profanity = db.Column(db.Float, default=1/7, unique=False)
+    insult = db.Column(db.Float, default=1/7, unique=False)
+    identity_attack = db.Column(db.Float, default=1/7, unique=False)
+    flirtation = db.Column(db.Float, default=1/7, unique=False)
 
     # Defines how a user object will be printed in the shell
     def __repr__(self):
@@ -62,6 +72,7 @@ class User(db.Model):
 
 # Post model
 class Post(db.Model):
+    __tablename__='post'
     id = db.Column(db.Integer, primary_key=True)
     date_posted = db.Column(db.DateTime, nullable=False,
                             default=datetime.utcnow)
@@ -69,13 +80,64 @@ class Post(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     retweet = db.Column(db.Integer, default=None, nullable=True, unique=False)
     comment = db.Column(db.Integer, default=None, nullable=True, unique=False)
-
+    toxicity = db.Column(db.Float, default=0.0, unique=False, nullable=True)
+    threat = db.Column(db.Float, default=0.0, unique=False, nullable=True)
+    sexually_explicit = db.Column(db.Float, default=0.0, unique=False)
+    profanity = db.Column(db.Float, default=0.0, unique=False)
+    insult = db.Column(db.Float, default=0.0, unique=False)
+    identity_attack = db.Column(db.Float, default=0.0, unique=False)
+    flirtation = db.Column(db.Float, default=0.0, unique=False)
     # Defines how a post object will be printed in the shell
     def __repr__(self):
         return f"Post ('{self.id}', '{self.date_posted}')"
 
+# class Toxicity(db.Model):
+#     __tablename__ = 'toxicity'
+#     id = db.Column(db.Integer, primary_key=True)
+#     post = db.relationship('Post', back_populates = 'toxicity')
+#     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+#     toxicity = db.Column(db.Float, default=0.0, unique=False, nullable=True)
+#     threat = db.Column(db.Float, default=0.0, unique=False, nullable=True)
+#     sexual_explicit = db.Column(db.Float, default=0.0, unique=False, nullable=True)
+#     profanity = db.Column(db.Float, default=0.0, unique=False, nullable=True)
+#     insult = db.Column(db.Float, default=0.0, unique=False, nullable=True)
+#     identity_attack = db.Column(db.Float, default=0.0, unique=False, nullable=True)
+#     flirtation = db.Column(db.Float, default=0.0, unique=False, nullable=True)
 
+#     # Defines how a user object will be printed in the shell
+#     def __repr__(self):
+#         return f"Toxicity ('{self.post_id}', '{self.toxicity}', '{self.threat}','{self.sexual_explicit}')"
+
+# class Weights(db.Model):
+#     __tablename__ = 'weights'
+#     id = db.Column(db.Integer, primary_key=True)
+#     user = db.relationship('User', back_populates='weights')
+#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+#     toxicity = db.Column(db.Float, default=1/7, unique=False, nullable=True)
+#     threat = db.Column(db.Float, default=1/7, unique=False, nullable=True)
+#     sexual_explicit = db.Column(db.Float, default=1/7, unique=False, nullable=True)
+#     profanity = db.Column(db.Float, default=1/7, unique=False, nullable=True)
+#     insult = db.Column(db.Float, default=1/7, unique=False, nullable=True)
+#     identity_attack = db.Column(db.Float, default=1/7, unique=False, nullable=True)
+#     flirtation = db.Column(db.Float, default=1/7, unique=False, nullable=True)
+
+#     # Defines how a user object will be printed in the shell
+#     def __repr__(self):
+#         return f"Weights for ('{self.user_id}', '{self.toxicity}', '{self.threat}','{self.sexual_explicit}')"
+
+
+# db.create_all()
+# db.session.commit()
+# weights = Weights.query.all()
+# print("weights: ", weights)
 ##################################  UTILS #####################################
+## calculate perspective scores for each post
+# posts = Post.query.all()
+# for post in posts:
+#     score_dict = moderation.get_perspective_score(post.content)
+#     db.session.query(Post).filter_by(id==post.id).update(score_dict)
+# db.session.commit()
+
 
 # Check if user logged in
 def is_logged_in(f):
