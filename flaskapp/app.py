@@ -7,6 +7,8 @@ from passlib.hash import sha256_crypt
 import os
 from werkzeug.utils import secure_filename
 from functools import wraps
+import moderation
+from sqlalchemy import update
 
 ##########################  CONFIG  ####################################
 
@@ -57,7 +59,7 @@ class User(db.Model):
                                backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
     toxicity = db.Column(db.Float, default=1/7, unique=False)
     threat = db.Column(db.Float, default=1/7, unique=False)
-    sexual_explicit = db.Column(db.Float, default=1/7, unique=False)
+    sexually_explicit = db.Column(db.Float, default=1/7, unique=False)
     profanity = db.Column(db.Float, default=1/7, unique=False)
     insult = db.Column(db.Float, default=1/7, unique=False)
     identity_attack = db.Column(db.Float, default=1/7, unique=False)
@@ -80,7 +82,7 @@ class Post(db.Model):
     comment = db.Column(db.Integer, default=None, nullable=True, unique=False)
     toxicity = db.Column(db.Float, default=0.0, unique=False, nullable=True)
     threat = db.Column(db.Float, default=0.0, unique=False, nullable=True)
-    sexual_explicit = db.Column(db.Float, default=0.0, unique=False)
+    sexually_explicit = db.Column(db.Float, default=0.0, unique=False)
     profanity = db.Column(db.Float, default=0.0, unique=False)
     insult = db.Column(db.Float, default=0.0, unique=False)
     identity_attack = db.Column(db.Float, default=0.0, unique=False)
@@ -129,6 +131,13 @@ class Post(db.Model):
 # weights = Weights.query.all()
 # print("weights: ", weights)
 ##################################  UTILS #####################################
+## calculate perspective scores for each post
+# posts = Post.query.all()
+# for post in posts:
+#     score_dict = moderation.get_perspective_score(post.content)
+#     db.session.query(Post).filter_by(id==post.id).update(score_dict)
+# db.session.commit()
+
 
 # Check if user logged in
 def is_logged_in(f):
