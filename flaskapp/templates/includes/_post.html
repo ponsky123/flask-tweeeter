@@ -4,7 +4,7 @@
         <article class="media">
             <figure class="media-left">
                 <p class="image is-64x64">
-                    {% set profile_pic = url_for('static', filename='profile_pics/' + post.author.image_file) %}
+                    {% set profile_pic = url_for('static', filename='profile_pics/default.jpg' ) %}
                     <img src="{{ profile_pic }}" style="width: 64px; height: 64px;" class="profile">
                 </p>
             </figure>
