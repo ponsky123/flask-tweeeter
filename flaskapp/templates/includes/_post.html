@@ -134,10 +134,26 @@
 
             </div>
             <div class="media-right">
-                <button class="button">More</button>
-              </div>
-
+                <button class="button" onclick="blurBox(this.parentNode.parentNode.parentNode.id)">Toxic</button>
+                <script>
+                    function blurBox(elem) {
+                        var boxElem = document.getElementById(elem);
+                        var mediaElem = document.getElementById(elem).getElementsByClassName("media")[0];
+                        mediaElem.style = "pointer-events: none; filter: blur(10px);";
+                        boxElem.getElementsByClassName("button")[1].style = "margin: 0 auto; display: block;";
+                    }
+                </script>
+            </div>
         </article>
+        <button class="button" onclick="unblurBox(this.parentNode.id)" style="margin: 0 auto; display: none;">Not Toxic</button>
+        <script>
+            function unblurBox(elem) {
+                var boxElem = document.getElementById(elem);
+                var mediaElem = document.getElementById(elem).getElementsByClassName("media")[0];
+                mediaElem.style = "";
+                boxElem.getElementsByClassName("button")[1].style = "margin: 0 auto; display: none;";
+            }
+        </script>
         <p> toxicity: {{post.toxicity}}, profanity: {{post.profanity}}, threat: {{post.threat}}
             identity attack: {{post.identity_attack}}, insult: {{post.insult}},
             sexually explicit: {{post.sexually_explicit}}, flirtation: {{post.flirtation}}
