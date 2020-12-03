@@ -116,6 +116,19 @@ class Post(db.Model):
 #           index_label='id',
 #           if_exists='replace')
 
+## Add weights to each user
+# users = User.query.all()
+# for user in users:
+#     # print(score_dict['toxicity'])
+#     user.toxicity = 1/7
+#     user.threat = 1/7
+#     user.sexually_explicit = 1/7
+#     user.profanity= 1/7
+#     user.insult = 1/7
+#     user.identity_attack = 1/7
+#     user.flirtation = 1/7
+#     db.session.commit()
+
 # Check if user logged in
 def is_logged_in(f):
     @wraps(f)
