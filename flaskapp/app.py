@@ -9,6 +9,7 @@ from werkzeug.utils import secure_filename
 from functools import wraps
 import moderation
 from sqlalchemy import update
+import pandas as pd
 
 ##########################  CONFIG  ####################################
 
@@ -91,45 +92,7 @@ class Post(db.Model):
     def __repr__(self):
         return f"Post ('{self.id}', '{self.date_posted}')"
 
-# class Toxicity(db.Model):
-#     __tablename__ = 'toxicity'
-#     id = db.Column(db.Integer, primary_key=True)
-#     post = db.relationship('Post', back_populates = 'toxicity')
-#     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
-#     toxicity = db.Column(db.Float, default=0.0, unique=False, nullable=True)
-#     threat = db.Column(db.Float, default=0.0, unique=False, nullable=True)
-#     sexual_explicit = db.Column(db.Float, default=0.0, unique=False, nullable=True)
-#     profanity = db.Column(db.Float, default=0.0, unique=False, nullable=True)
-#     insult = db.Column(db.Float, default=0.0, unique=False, nullable=True)
-#     identity_attack = db.Column(db.Float, default=0.0, unique=False, nullable=True)
-#     flirtation = db.Column(db.Float, default=0.0, unique=False, nullable=True)
 
-#     # Defines how a user object will be printed in the shell
-#     def __repr__(self):
-#         return f"Toxicity ('{self.post_id}', '{self.toxicity}', '{self.threat}','{self.sexual_explicit}')"
-
-# class Weights(db.Model):
-#     __tablename__ = 'weights'
-#     id = db.Column(db.Integer, primary_key=True)
-#     user = db.relationship('User', back_populates='weights')
-#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-#     toxicity = db.Column(db.Float, default=1/7, unique=False, nullable=True)
-#     threat = db.Column(db.Float, default=1/7, unique=False, nullable=True)
-#     sexual_explicit = db.Column(db.Float, default=1/7, unique=False, nullable=True)
-#     profanity = db.Column(db.Float, default=1/7, unique=False, nullable=True)
-#     insult = db.Column(db.Float, default=1/7, unique=False, nullable=True)
-#     identity_attack = db.Column(db.Float, default=1/7, unique=False, nullable=True)
-#     flirtation = db.Column(db.Float, default=1/7, unique=False, nullable=True)
-
-#     # Defines how a user object will be printed in the shell
-#     def __repr__(self):
-#         return f"Weights for ('{self.user_id}', '{self.toxicity}', '{self.threat}','{self.sexual_explicit}')"
-
-
-# db.create_all()
-# db.session.commit()
-# weights = Weights.query.all()
-# print("weights: ", weights)
 ##################################  UTILS #####################################
 ## calculate perspective scores for each post
 # posts = Post.query.all()
@@ -141,6 +104,17 @@ class Post(db.Model):
 #     db.session.commit()
 #     print(post.toxicity)
 
+## Adding csv data to the table 
+# engine = db.get_engine()
+# with open('new.csv', 'rb') as f:
+#     df = pd.read_csv('new.csv')
+#     df['date_posted'] = datetime.utcnow()
+#     df = df.assign(date_posted=pd.to_datetime(df['date_posted'],dayfirst=True, errors='coerce'))
+# df.to_sql('post',
+#           con=engine,
+#           index=False,
+#           index_label='id',
+#           if_exists='replace')
 
 # Check if user logged in
 def is_logged_in(f):
