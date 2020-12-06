@@ -65,7 +65,7 @@ class User(db.Model):
     insult = db.Column(db.Float, default=1/7, unique=False)
     identity_attack = db.Column(db.Float, default=1/7, unique=False)
     flirtation = db.Column(db.Float, default=1/7, unique=False)
-
+    actions = db.relationship('Action', backref='user')
     # Defines how a user object will be printed in the shell
     def __repr__(self):
         return f"User ('{self.username}', '{self.email}', '{self.id}')"
@@ -81,6 +81,24 @@ class Post(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     retweet = db.Column(db.Integer, default=None, nullable=True, unique=False)
     comment = db.Column(db.Integer, default=None, nullable=True, unique=False)
+    toxicity = db.Column(db.Float, default=0.0, unique=False, nullable=True)
+    threat = db.Column(db.Float, default=0.0, unique=False, nullable=True)
+    sexually_explicit = db.Column(db.Float, default=0.0, unique=False)
+    profanity = db.Column(db.Float, default=0.0, unique=False)
+    insult = db.Column(db.Float, default=0.0, unique=False)
+    identity_attack = db.Column(db.Float, default=0.0, unique=False)
+    flirtation = db.Column(db.Float, default=0.0, unique=False)
+    
+    # Defines how a post object will be printed in the shell
+    def __repr__(self):
+        return f"Post ('{self.id}', '{self.date_posted}')"
+
+class Action(db.Model):
+    __tablename__='action'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    action = db.Column(db.Integer, unique=False, nullable=True)
+    label = db.Column(db.Integer, unique=False, nullable=True)
     toxicity = db.Column(db.Float, default=0.0, unique=False, nullable=True)
     threat = db.Column(db.Float, default=0.0, unique=False, nullable=True)
     sexually_explicit = db.Column(db.Float, default=0.0, unique=False)
