@@ -104,7 +104,7 @@ class Post(db.Model):
 #     db.session.commit()
 #     print(post.toxicity)
 
-## Adding csv data to the table 
+## Adding csv data to the table
 # engine = db.get_engine()
 # with open('new.csv', 'rb') as f:
 #     df = pd.read_csv('new.csv')
@@ -147,6 +147,20 @@ def current_user():
         return User.query.filter_by(username=session['username']).first()
     else:
         return None
+
+# Update Tweet weights to blur
+# posts = Post.query.all()
+# user = User.query.filter_by(username='flubvolimeikulxkqo').first()
+# for post in posts:
+#     score = (post.toxicity * user.toxicity) + \
+#             (post.threat * user.threat) + \
+#             (post.sexually_explicit * user.sexually_explicit) + \
+#             (post.profanity * user.profanity) + \
+#             (post.insult * user.insult) + \
+#             (post.identity_attack * user.identity_attack) + \
+#             (post.flirtation * user.flirtation)
+#     if score > 0.5:
+#         print(post.id)
 
 
 ############################    ROUTES  #####################################
