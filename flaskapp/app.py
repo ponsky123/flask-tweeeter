@@ -147,6 +147,8 @@ class Action(db.Model):
 #     user.flirtation = 1/7
 #     db.session.commit()
 
+
+
 # Check if user logged in
 def is_logged_in(f):
     @wraps(f)
