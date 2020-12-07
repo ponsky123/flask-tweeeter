@@ -158,7 +158,7 @@ def current_user():
 #     db.session.commit()
 #     print(post.toxicity)
 
-## Adding csv data to the table 
+## Adding csv data to the Post 
 # engine = db.get_engine()
 # with open('new.csv', 'rb') as f:
 #     df = pd.read_csv('new.csv')
@@ -187,6 +187,20 @@ def current_user():
 # posts = Post.query.all()
 # for post in posts:
 #     post.date_posted = random_date(datetime.strptime('1/1/2020 1:30 PM', '%m/%d/%Y %I:%M %p'), datetime.strptime('12/1/2020 1:30 PM', '%m/%d/%Y %I:%M %p'))
+#     db.session.commit()
+
+## Adding csv data to the table 
+# engine = db.get_engine()
+# with open('df-user-scores.csv', 'rb') as f:
+#     df = pd.read_csv('df-user-scores.csv')
+# names = ['User_A','User_B','User_C']
+# for i in range(len(names)):
+#     user = User.query.filter_by(username=names[i]).first()
+#     user.flirtation = df['w1'].iloc[i]
+#     user.identity_attack = df['w2'].iloc[i]
+#     user.sexually_explicit = df['w3'].iloc[i]
+#     user.threat = df['w4'].iloc[i]
+#     user.toxicity = df['w5'].iloc[i]
 #     db.session.commit()
 
 ############################    ROUTES  #####################################
