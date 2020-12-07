@@ -156,6 +156,24 @@
                 boxElem.getElementsByClassName("button")[1].style = "display: none;";
             }
         </script>
+        <script>
+            function blurBoxAuto(elem){
+                var score_toxicity = {{post.toxicity}} * {{user.toxicity}};
+                var score_profanity = {{post.profanity}} * {{user.profanity}};
+                var score_threat = {{post.threat}} * {{user.threat}};
+                var score_identity_attack = {{post.identity_attack}} * {{user.identity_attack}};
+                var score_insult = {{post.insult}} * {{user.insult}};
+                var score_sexually_explicit = {{post.sexually_explicit}} * {{user.sexually_explicit}};
+                var score_flirtation = {{post.flirtation}} * {{user.flirtation}};
+                var score = score_toxicity + score_profanity + score_threat + score_identity_attack + score_insult + score_sexually_explicit + score_flirtation;
+                var inv_logit = 1 / (1 + Math.exp(-score));
+                console.log(inv_logit);
+                if (inv_logit > 0.6) {
+                    blurBox(elem);
+                }
+            }
+            blurBoxAuto({{id}});
+        </script>
         <p> toxicity: {{post.toxicity}}, profanity: {{post.profanity}}, threat: {{post.threat}}
             identity attack: {{post.identity_attack}}, insult: {{post.insult}},
             sexually explicit: {{post.sexually_explicit}}, flirtation: {{post.flirtation}}

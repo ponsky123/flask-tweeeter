@@ -158,7 +158,7 @@ def current_user():
 #     db.session.commit()
 #     print(post.toxicity)
 
-## Adding csv data to the Post 
+
 # engine = db.get_engine()
 # with open('new.csv', 'rb') as f:
 #     df = pd.read_csv('new.csv')
@@ -189,6 +189,21 @@ def current_user():
 #     post.date_posted = random_date(datetime.strptime('1/1/2020 1:30 PM', '%m/%d/%Y %I:%M %p'), datetime.strptime('12/1/2020 1:30 PM', '%m/%d/%Y %I:%M %p'))
 #     db.session.commit()
 
+
+# Update Tweet weights to blur
+# posts = Post.query.all()
+# user = User.query.filter_by(username='flubvolimeikulxkqo').first()
+# for post in posts:
+#     score = (post.toxicity * user.toxicity) + \
+#             (post.threat * user.threat) + \
+#             (post.sexually_explicit * user.sexually_explicit) + \
+#             (post.profanity * user.profanity) + \
+#             (post.insult * user.insult) + \
+#             (post.identity_attack * user.identity_attack) + \
+#             (post.flirtation * user.flirtation)
+#     if score > 0.5:
+#         print(post.id)
+
 ## Adding csv data to the table 
 # engine = db.get_engine()
 # with open('df-user-scores.csv', 'rb') as f:
@@ -202,6 +217,7 @@ def current_user():
 #     user.threat = df['w4'].iloc[i]
 #     user.toxicity = df['w5'].iloc[i]
 #     db.session.commit()
+
 
 ############################    ROUTES  #####################################
 
