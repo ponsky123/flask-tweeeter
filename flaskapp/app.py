@@ -10,6 +10,8 @@ from functools import wraps
 import moderation
 from sqlalchemy import update
 import pandas as pd
+from random import randrange
+from datetime import timedelta
 
 ##########################  CONFIG  ####################################
 
@@ -65,7 +67,7 @@ class User(db.Model):
     insult = db.Column(db.Float, default=1/7, unique=False)
     identity_attack = db.Column(db.Float, default=1/7, unique=False)
     flirtation = db.Column(db.Float, default=1/7, unique=False)
-
+    actions = db.relationship('Action', backref='user')
     # Defines how a user object will be printed in the shell
     def __repr__(self):
         return f"User ('{self.username}', '{self.email}', '{self.id}')"
@@ -88,12 +90,64 @@ class Post(db.Model):
     insult = db.Column(db.Float, default=0.0, unique=False)
     identity_attack = db.Column(db.Float, default=0.0, unique=False)
     flirtation = db.Column(db.Float, default=0.0, unique=False)
+    
+    # Defines how a post object will be printed in the shell
+    def __repr__(self):
+        return f"Post ('{self.id}', '{self.date_posted}')"
+
+class Action(db.Model):
+    __tablename__='action'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    action = db.Column(db.Integer, unique=False, nullable=True)
+    label = db.Column(db.Integer, unique=False, nullable=True)
+    toxicity = db.Column(db.Float, default=0.0, unique=False, nullable=True)
+    threat = db.Column(db.Float, default=0.0, unique=False, nullable=True)
+    sexually_explicit = db.Column(db.Float, default=0.0, unique=False)
+    profanity = db.Column(db.Float, default=0.0, unique=False)
+    insult = db.Column(db.Float, default=0.0, unique=False)
+    identity_attack = db.Column(db.Float, default=0.0, unique=False)
+    flirtation = db.Column(db.Float, default=0.0, unique=False)
     # Defines how a post object will be printed in the shell
     def __repr__(self):
         return f"Post ('{self.id}', '{self.date_posted}')"
 
 
 ##################################  UTILS #####################################
+
+
+def random_date(start, end):
+    """
+    This function will return a random datetime between two datetime 
+    objects.
+    """
+    delta = end - start
+    int_delta = (delta.days * 24 * 60 * 60) + delta.seconds
+    random_second = randrange(int_delta)
+    return start + timedelta(seconds=random_second)
+
+
+# Check if user logged in
+def is_logged_in(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash('Unauthorized, Please login', 'danger')
+            return redirect(url_for('login'))
+    return wrap
+
+
+# Returns current user
+def current_user():
+    if len(session) > 0:
+        return User.query.filter_by(username=session['username']).first()
+    else:
+        return None
+
+############################    Modify database #############################
+
 ## calculate perspective scores for each post
 # posts = Post.query.all()
 # for post in posts:
@@ -104,7 +158,7 @@ class Post(db.Model):
 #     db.session.commit()
 #     print(post.toxicity)
 
-## Adding csv data to the table
+
 # engine = db.get_engine()
 # with open('new.csv', 'rb') as f:
 #     df = pd.read_csv('new.csv')
@@ -129,24 +183,12 @@ class Post(db.Model):
 #     user.flirtation = 1/7
 #     db.session.commit()
 
-# Check if user logged in
-def is_logged_in(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if 'logged_in' in session:
-            return f(*args, **kwargs)
-        else:
-            flash('Unauthorized, Please login', 'danger')
-            return redirect(url_for('login'))
-    return wrap
+## Change date of each post
+# posts = Post.query.all()
+# for post in posts:
+#     post.date_posted = random_date(datetime.strptime('1/1/2020 1:30 PM', '%m/%d/%Y %I:%M %p'), datetime.strptime('12/1/2020 1:30 PM', '%m/%d/%Y %I:%M %p'))
+#     db.session.commit()
 
-
-# Returns current user
-def current_user():
-    if len(session) > 0:
-        return User.query.filter_by(username=session['username']).first()
-    else:
-        return None
 
 # Update Tweet weights to blur
 # posts = Post.query.all()
@@ -161,6 +203,20 @@ def current_user():
 #             (post.flirtation * user.flirtation)
 #     if score > 0.5:
 #         print(post.id)
+
+## Adding csv data to the table 
+# engine = db.get_engine()
+# with open('df-user-scores.csv', 'rb') as f:
+#     df = pd.read_csv('df-user-scores.csv')
+# names = ['User_A','User_B','User_C']
+# for i in range(len(names)):
+#     user = User.query.filter_by(username=names[i]).first()
+#     user.flirtation = df['w1'].iloc[i]
+#     user.identity_attack = df['w2'].iloc[i]
+#     user.sexually_explicit = df['w3'].iloc[i]
+#     user.threat = df['w4'].iloc[i]
+#     user.toxicity = df['w5'].iloc[i]
+#     db.session.commit()
 
 
 ############################    ROUTES  #####################################
