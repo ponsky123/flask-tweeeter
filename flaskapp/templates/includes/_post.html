@@ -168,7 +168,7 @@
                 var score = score_toxicity + score_profanity + score_threat + score_identity_attack + score_insult + score_sexually_explicit + score_flirtation;
                 var inv_logit = 1 / (1 + Math.exp(-score));
                 console.log(inv_logit);
-                if (inv_logit > 0.6) {
+                if (inv_logit > 0.75) {
                     blurBox(elem);
                 }
             }
