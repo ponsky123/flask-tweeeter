@@ -166,7 +166,9 @@
                 var score_sexually_explicit = {{post.sexually_explicit}} * {{user.sexually_explicit}};
                 var score_flirtation = {{post.flirtation}} * {{user.flirtation}};
                 var score = score_toxicity + score_profanity + score_threat + score_identity_attack + score_insult + score_sexually_explicit + score_flirtation;
-                if (score > 0.5) {
+                var inv_logit = 1 / (1 + Math.exp(-score));
+                console.log(inv_logit);
+                if (inv_logit > 0.6) {
                     blurBox(elem);
                 }
             }
