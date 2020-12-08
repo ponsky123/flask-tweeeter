@@ -148,27 +148,18 @@ def current_user():
 
 ############################    Modify database #############################
 
-## calculate perspective scores for each post
-# posts = Post.query.all()
-# for post in posts:
-#     print(post.toxicity)
-#     score_dict = moderation.get_perspective_score(post.content)
-#     # print(score_dict['toxicity'])
-#     post.toxicity = score_dict['toxicity']
-#     db.session.commit()
-#     print(post.toxicity)
+## write to database
 
-
-# engine = db.get_engine()
-# with open('new.csv', 'rb') as f:
-#     df = pd.read_csv('new.csv')
-#     df['date_posted'] = datetime.utcnow()
-#     df = df.assign(date_posted=pd.to_datetime(df['date_posted'],dayfirst=True, errors='coerce'))
-# df.to_sql('post',
-#           con=engine,
-#           index=False,
-#           index_label='id',
-#           if_exists='replace')
+engine = db.get_engine()
+with open('new.csv', 'rb') as f:
+    df = pd.read_csv('new.csv')
+    df['date_posted'] =  random_date(datetime.strptime('1/1/2020 1:30 PM', '%m/%d/%Y %I:%M %p'), datetime.strptime('12/1/2020 1:30 PM', '%m/%d/%Y %I:%M %p'))
+    df = df.assign(date_posted=pd.to_datetime(df['date_posted'],dayfirst=True, errors='coerce'))
+df.to_sql('post',
+          con=engine,
+          index=False,
+          index_label='id',
+          if_exists='replace')
 
 ## Add weights to each user
 # users = User.query.all()

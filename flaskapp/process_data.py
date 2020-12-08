@@ -10,7 +10,7 @@ new_df = pandas.DataFrame(columns=['id', 'date_posted', 'content', 'user_id', \
 'insult', 'identity_attack', 'flirtation'])
 
 for index, row in df.iterrows():
-    
+    print(index)
     score_dict = moderation.get_perspective_score(row['tweet'])
     new_df = new_df.append({
         'id': row['id'],
