@@ -143,32 +143,10 @@
                         mediaElem.style = "pointer-events: none; filter: blur(10px);";
                         //boxElem.getElementsByClassName("button")[1].style = "float: right; display: block;";
                         boxElem.getElementsByClassName("button")[1].style = "position: absolute; top: 20px; right: 20px; display: block;";
-                        data = JSON.stringify({
-                            user_id: {{post.id}},
-                            action: 0,
-                            label: 0,
-                            toxicity: {{post.toxicity}},
-                            threat: {{post.threat}},
-                            sexually_explicit: {{post.sexually_explicit}},
-                            profanity:{{post.profanity}},
-                            insult : {{post.insult}},
-                            identity_attack: {{post.identity_attack}},
-                            flirtation: {{post.flirtation}}
-                        });
-                        console.log(data);
-
-                        fetch('/', {
-                            method: "POST",
-                            headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                            },
-                            body: data
-                            })
-                            .then(res => JSON.stringify(res.json()))
-                            .catch(err => console.log(err))
-
+                        sendData(elem);
                     }
+
+                    
                 </script>
             </div>
             
@@ -181,33 +159,40 @@
                 var mediaElem = document.getElementById(elem).getElementsByClassName("media")[0];
                 mediaElem.style = "";
                 boxElem.getElementsByClassName("button")[1].style = "display: none;";
-                data = JSON.stringify({
-                    user_id: {{user.id}},
-                    action: 1,
-                    label: 0,
-                    toxicity: {{post.toxicity}},
-                    threat: {{post.threat}},
-                    sexually_explicit: {{post.sexually_explicit}},
-                    profanity:{{post.profanity}},
-                    insult : {{post.insult}},
-                    identity_attack: {{post.identity_attack}},
-                    flirtation: {{post.flirtation}}
-                });
-                console.log(data);
-
-                fetch('/', {
-                    method: "POST",
-                    headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                    },
-                    body: data
-                    })
-                    .then(res => JSON.stringify(res.json()))
-                    .catch(err => console.log(err))
+                sendData(elem);
             }
         </script>
+
         <script>
+        function sendData(elem) {
+            console.log(parseInt(elem))
+        
+            var data = JSON.stringify({
+                        user_id: {{post.id}},
+                        action: 0,
+                        label: 0,
+                        toxicity: {{post.toxicity}},
+                        threat: {{post.threat}},
+                        sexually_explicit: {{post.sexually_explicit}},
+                        profanity:{{post.profanity}},
+                        insult : {{post.insult}},
+                        identity_attack: {{post.identity_attack}},
+                        flirtation: {{post.flirtation}}
+                });
+            console.log(data);
+
+            fetch('/', {
+                method: "POST",
+                headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+                },
+                body: data
+                })
+                .then(res => JSON.stringify(res.json()))
+                .catch(err => console.log(err))
+            }
+
             function blurBox(elem) {
                 var boxElem = document.getElementById(elem);
                 var mediaElem = document.getElementById(elem).getElementsByClassName("media")[0];
@@ -229,9 +214,10 @@
                 var inv_logit = 1 / (1 + Math.exp(-score));
                 if (inv_logit > SCORE_TARGET) {
                     blurBox(elem);
-                }
+                }   
                 
             }
+            
             blurBoxAuto({{id}});
         </script>
         <p> toxicity: {{post.toxicity}}, threat: {{post.threat}}, flirtation: {{post.flirtation}}, <br>
