@@ -150,29 +150,16 @@ def current_user():
 
 ## write to database
 
-engine = db.get_engine()
-with open('new.csv', 'rb') as f:
-    df = pd.read_csv('new.csv')
-    df['date_posted'] =  random_date(datetime.strptime('1/1/2020 1:30 PM', '%m/%d/%Y %I:%M %p'), datetime.strptime('12/1/2020 1:30 PM', '%m/%d/%Y %I:%M %p'))
-    df = df.assign(date_posted=pd.to_datetime(df['date_posted'],dayfirst=True, errors='coerce'))
-df.to_sql('post',
-          con=engine,
-          index=False,
-          index_label='id',
-          if_exists='replace')
-
-## Add weights to each user
-# users = User.query.all()
-# for user in users:
-#     # print(score_dict['toxicity'])
-#     user.toxicity = 1/7
-#     user.threat = 1/7
-#     user.sexually_explicit = 1/7
-#     user.profanity= 1/7
-#     user.insult = 1/7
-#     user.identity_attack = 1/7
-#     user.flirtation = 1/7
-#     db.session.commit()
+# engine = db.get_engine()
+# with open('new.csv', 'rb') as f:
+#     df = pd.read_csv('new.csv')
+#     df['date_posted'] =  random_date(datetime.strptime('1/1/2020 1:30 PM', '%m/%d/%Y %I:%M %p'), datetime.strptime('12/1/2020 1:30 PM', '%m/%d/%Y %I:%M %p'))
+#     df = df.assign(date_posted=pd.to_datetime(df['date_posted'],dayfirst=True, errors='coerce'))
+# df.to_sql('post',
+#           con=engine,
+#           index=False,
+#           index_label='id',
+#           if_exists='replace')
 
 ## Change date of each post
 # posts = Post.query.all()
@@ -180,20 +167,6 @@ df.to_sql('post',
 #     post.date_posted = random_date(datetime.strptime('1/1/2020 1:30 PM', '%m/%d/%Y %I:%M %p'), datetime.strptime('12/1/2020 1:30 PM', '%m/%d/%Y %I:%M %p'))
 #     db.session.commit()
 
-
-# Update Tweet weights to blur
-# posts = Post.query.all()
-# user = User.query.filter_by(username='flubvolimeikulxkqo').first()
-# for post in posts:
-#     score = (post.toxicity * user.toxicity) + \
-#             (post.threat * user.threat) + \
-#             (post.sexually_explicit * user.sexually_explicit) + \
-#             (post.profanity * user.profanity) + \
-#             (post.insult * user.insult) + \
-#             (post.identity_attack * user.identity_attack) + \
-#             (post.flirtation * user.flirtation)
-#     if score > 0.5:
-#         print(post.id)
 
 ## Adding csv data to the table 
 # engine = db.get_engine()
@@ -209,6 +182,13 @@ df.to_sql('post',
 #     user.toxicity = df['w5'].iloc[i]
 #     db.session.commit()
 
+## write action table to csv to check
+# engine = db.get_engine()
+# action_data =db.session.query(Action).all()
+# # df = pd.DataFrame(action_data)
+# df= pd.read_sql_table('action', engine)
+# print(df)
+# df.to_csv('out.csv', index=False)
 
 ############################    ROUTES  #####################################
 
@@ -227,11 +207,23 @@ def home():
     if request.method == 'POST':
         data = request.get_json()
         print("user action: ", data)
-    # if data != None:
-    #     action = Action(**data)
-    #     print(action.toxicity)
-    #     db.session.add(action)
-    #     db.session.commit()
+    if data != None:
+        tweet = Post.query.filter_by(id=data['tweet_id']).first()
+        user_action = {
+            'user_id':data['user_id'],
+            'action':data['action'],
+            'label': data['label'],
+            'toxicity':tweet.toxicity,
+            'threat':tweet.threat, 
+            'sexually_explicit': tweet.sexually_explicit,
+            'profanity': tweet.profanity,
+            'insult':tweet.insult, 
+            'identity_attack': tweet.identity_attack,
+            'flirtation': tweet.flirtation
+        }
+        action = Action(**user_action)
+        db.session.add(action)
+        db.session.commit()
     return render_template('home.html', posts=posts, user=current_user(), Post_model=Post, likes=likes, follow_suggestions=follow_suggestions, User=User)
 
 

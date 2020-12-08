@@ -143,7 +143,7 @@
                         mediaElem.style = "pointer-events: none; filter: blur(10px);";
                         //boxElem.getElementsByClassName("button")[1].style = "float: right; display: block;";
                         boxElem.getElementsByClassName("button")[1].style = "position: absolute; top: 20px; right: 20px; display: block;";
-                        sendData(elem);
+                        sendData(elem, 1);
                     }
 
                     
@@ -159,25 +159,17 @@
                 var mediaElem = document.getElementById(elem).getElementsByClassName("media")[0];
                 mediaElem.style = "";
                 boxElem.getElementsByClassName("button")[1].style = "display: none;";
-                sendData(elem);
+                sendData(elem, 0);
             }
         </script>
 
         <script>
-        function sendData(elem) {
-            console.log(parseInt(elem))
-        
+        function sendData(elem, user_label) {
             var data = JSON.stringify({
-                        user_id: {{post.id}},
-                        action: 0,
-                        label: 0,
-                        toxicity: {{post.toxicity}},
-                        threat: {{post.threat}},
-                        sexually_explicit: {{post.sexually_explicit}},
-                        profanity:{{post.profanity}},
-                        insult : {{post.insult}},
-                        identity_attack: {{post.identity_attack}},
-                        flirtation: {{post.flirtation}}
+                        user_id: {{user.id}},
+                        action: user_label,
+                        label: user_label,
+                        tweet_id: parseInt(elem)
                 });
             console.log(data);
 
