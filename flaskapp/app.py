@@ -110,7 +110,7 @@ class Action(db.Model):
     flirtation = db.Column(db.Float, default=0.0, unique=False)
     # Defines how a post object will be printed in the shell
     def __repr__(self):
-        return f"Post ('{self.id}', '{self.date_posted}')"
+        return f"Post ('{self.user_id}', '{self.action}')"
 
 
 ##################################  UTILS #####################################
@@ -223,6 +223,7 @@ def home():
         if current_user() in follow_suggestions:  # If the current user is in the user's follow suggestions
             follow_suggestions.remove(current_user())
 
+    
     return render_template('home.html', posts=posts, user=current_user(), Post_model=Post, likes=likes, follow_suggestions=follow_suggestions, User=User)
 
 

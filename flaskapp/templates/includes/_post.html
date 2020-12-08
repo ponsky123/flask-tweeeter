@@ -136,12 +136,14 @@
             <div class="media-right">
                 <button class="button" onclick="blurBox(this.parentNode.parentNode.parentNode.id)">Toxic</button>
                 <script>
+                    
                     function blurBox(elem) {
                         var boxElem = document.getElementById(elem);
                         var mediaElem = document.getElementById(elem).getElementsByClassName("media")[0];
                         mediaElem.style = "pointer-events: none; filter: blur(10px);";
                         //boxElem.getElementsByClassName("button")[1].style = "float: right; display: block;";
                         boxElem.getElementsByClassName("button")[1].style = "position: absolute; top: 20px; right: 20px; display: block;";
+                        console.log({{post.toxicity}});
                     }
                 </script>
             </div>
@@ -174,9 +176,9 @@
             }
             blurBoxAuto({{id}});
         </script>
-        <p> toxicity: {{post.toxicity}}, profanity: {{post.profanity}}, threat: {{post.threat}}
-            identity attack: {{post.identity_attack}}, insult: {{post.insult}},
-            sexually explicit: {{post.sexually_explicit}}, flirtation: {{post.flirtation}}
+        <p> toxicity: {{post.toxicity}}, threat: {{post.threat}}, flirtation: {{post.flirtation}}, <br>
+            identity attack: {{post.identity_attack}},
+            sexually explicit: {{post.sexually_explicit}}
         </p>
     </div>
 </a>
