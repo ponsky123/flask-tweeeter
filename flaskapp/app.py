@@ -213,7 +213,7 @@ df.to_sql('post',
 ############################    ROUTES  #####################################
 
 # Home route (default)
-@app.route('/')
+@app.route('/', methods=['GET','POST'])
 def home():
     posts = Post.query.filter_by(comment=None).all()
     follow_suggestions = User.query.all()[0:6]
@@ -223,7 +223,13 @@ def home():
         if current_user() in follow_suggestions:  # If the current user is in the user's follow suggestions
             follow_suggestions.remove(current_user())
 
-    
+    data = request.get_json()
+    print("user action: ", data)
+    # if data != None:
+    #     action = Action(**data)
+    #     print(action.toxicity)
+    #     db.session.add(action)
+    #     db.session.commit()
     return render_template('home.html', posts=posts, user=current_user(), Post_model=Post, likes=likes, follow_suggestions=follow_suggestions, User=User)
 
 
