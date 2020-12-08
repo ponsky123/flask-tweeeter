@@ -223,8 +223,10 @@ def home():
         if current_user() in follow_suggestions:  # If the current user is in the user's follow suggestions
             follow_suggestions.remove(current_user())
 
-    data = request.get_json()
-    print("user action: ", data)
+    data = None
+    if request.method == 'POST':
+        data = request.get_json()
+        print("user action: ", data)
     # if data != None:
     #     action = Action(**data)
     #     print(action.toxicity)
