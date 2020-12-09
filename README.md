@@ -1,6 +1,6 @@
-# flask-tweeeter
+# work4it
 
-### A full-stack Twitter clone made using the Flask framework for Python 🐦
+### A personalzied moderation tool built on top of a full-stack Twitter clone made using the Flask framework for Python 🐦
 
 <br/>
 
@@ -20,13 +20,6 @@ A beginner project using the following stack:
 <br>
 
 # Tweeeter Installation
-
-First clone mapnik from github
-
-```bash
-git clone https://github.com/nadav-ram/flask-tweeeter.git
-cd flask-tweeeter
-```
 
 To create a virtualenv:
 

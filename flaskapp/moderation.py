@@ -5,8 +5,8 @@ import sys
 import time
 
 
-
-api_key = 'AIzaSyD6lXIN2SuT-2jMeXFvLA4-Hevc9viKgts'
+## paste api key below
+api_key = ''
 url = ('https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze' +'?key=' + api_key)
 
 ## a funcition that takes a tweet (string) and output a dictionary of all the scores from perspective API
@@ -30,7 +30,7 @@ def get_perspective_score(tweet):
         key = key.lower()
         score_dict[key] = value
       success = True
-    
+
     except Exception as err:
       print(f'Other error occurred: {err}')
       wait = retries * 30;
